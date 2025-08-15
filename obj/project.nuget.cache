@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "hhAfreHufxw=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\willi\\Downloads\\ProcessSchedulerSim_fixed\\ProcessSchedulerSim_fixed\\ProcessSchedulerSim.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\willi\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.303\\microsoft.net.sdk.compilers.toolset.9.0.303.nupkg.sha512"
+  ],
+  "logs": []
+}
