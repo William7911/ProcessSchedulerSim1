@@ -2,10 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace ProcessSchedulerSim
 {
     public enum ProcessState { New, Ready, Running, Waiting, Terminated }
 
+
+    //Proceso representado por un elemento en la lista de procesos.
+    //Contiene información sobre el PID, tiempos de llegada y ráfaga, estado actual y tiempos de inicio y finalización.
+    //Permite clonar el proceso para simular su ejecución.
+ 
     public sealed class ProcessItem
     {
         public string PID { get; set; } = string.Empty;
@@ -19,6 +25,8 @@ namespace ProcessSchedulerSim
         public int WaitingTime => (FinishTime >= 0) ? (FinishTime - Arrival - Burst) : 0;
         public int TurnaroundTime => (FinishTime >= 0) ? (FinishTime - Arrival) : 0;
 
+
+        // Clona el proceso para simular su ejecución, reiniciando el tiempo restante y el estado.
         public ProcessItem CloneForRun() => new ProcessItem
         {
             PID = PID,
@@ -29,6 +37,7 @@ namespace ProcessSchedulerSim
         };
     }
 
+    //ScheduledSlice representa un segmento de tiempo en el que un proceso está en ejecución.
     public sealed class ScheduledSlice
     {
         public string PID { get; set; } = string.Empty;
@@ -36,6 +45,7 @@ namespace ProcessSchedulerSim
         public int End { get; set; }
     }
 
+    // ScheduleResult almacena el resultado de la planificación de procesos.
     public sealed class ScheduleResult
     {
         public List<ScheduledSlice> Timeline { get; } = new();
@@ -46,6 +56,7 @@ namespace ProcessSchedulerSim
         public int Makespan { get; set; }
     }
 
+    // Scheduler contiene métodos para ejecutar diferentes algoritmos de planificación de procesos.
     public static class Scheduler
     {
         public static ScheduleResult RunFCFS(IEnumerable<ProcessItem> items)
@@ -71,6 +82,7 @@ namespace ProcessSchedulerSim
             return res;
         }
 
+        // RunSJF ejecuta el algoritmo de planificación SJF (Shortest Job First).
         public static ScheduleResult RunSJF(IEnumerable<ProcessItem> items)
         {
             var all = items.Select(p => p.CloneForRun()).ToList();
@@ -102,6 +114,7 @@ namespace ProcessSchedulerSim
             return res;
         }
 
+        // RunRR ejecuta el algoritmo de planificación Round Robin (RR) con un quantum especificado.
         public static ScheduleResult RunRR(IEnumerable<ProcessItem> items, int quantum)
         {
             if (quantum <= 0) quantum = 1;
@@ -112,6 +125,7 @@ namespace ProcessSchedulerSim
             int time = 0;
             int idx = 0;
 
+            // Inicializa el índice de procesos y el tiempo.
             while (true)
             {
                 while (idx < all.Count && all[idx].Arrival <= time)
@@ -130,7 +144,7 @@ namespace ProcessSchedulerSim
                     }
                     else break;
                 }
-
+                //Procesa el primer elemento de la cola.
                 var p = queue.Dequeue();
                 p.State = ProcessState.Running;
                 if (p.StartTime < 0) p.StartTime = time;
@@ -160,10 +174,12 @@ namespace ProcessSchedulerSim
                 }
             }
 
+            // Finaliza los procesos restantes en la cola.
             ComputeMetrics(res);
             return res;
         }
 
+        // RunPriority ejecuta el algoritmo de planificación por prioridad.
         private static void ComputeMetrics(ScheduleResult res)
         {
             res.Makespan = res.Timeline.Count == 0 ? 0 : res.Timeline.Max(s => s.End);
