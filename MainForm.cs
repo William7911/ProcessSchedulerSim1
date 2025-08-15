@@ -1,3 +1,4 @@
+// Simulador de planificación de procesos con algoritmos FCFS, SJF y Round Robin
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,12 @@ namespace ProcessSchedulerSim
         private int _sliceElapsed = 0;
         private int _sliceDuration = 0;
 
+
+
         public MainForm()
         {
+            //crea por defecto 3 procesos para probar la simulación 
             InitializeComponent();
-            // seed example processes
             AddProcessRow("P1", 0, 7);
             AddProcessRow("P2", 2, 4);
             AddProcessRow("P3", 4, 1);
@@ -33,6 +36,7 @@ namespace ProcessSchedulerSim
             grid.Rows.Add(pid, arrival, burst);
         }
 
+        // Lee los procesos desde el DataGridView y los convierte en una lista de ProcessItem
         private List<ProcessItem> ReadGrid()
         {
             var list = new List<ProcessItem>();
@@ -48,14 +52,17 @@ namespace ProcessSchedulerSim
             return list.OrderBy(p => p.Arrival).ToList();
         }
 
+        // Agrega un nuevo proceso con valores aleatorios
         private void BtnAdd_Click(object? sender, EventArgs e)
         {
             var idx = grid.Rows.Count + 1;
             AddProcessRow($"P{idx}", _rnd.Next(0, 10), _rnd.Next(1, 10));
         }
 
+        // Agrega varios procesos aleatorios
         private void BtnRandom_Click(object? sender, EventArgs e)
         {
+            // Agrega varios procesos aleatorios
             grid.Rows.Clear();
             int n = _rnd.Next(3, 7);
             int t = 0;
@@ -66,6 +73,7 @@ namespace ProcessSchedulerSim
             }
         }
 
+        // Inicia la simulación según el algoritmo seleccionado
         private void BtnRun_Click(object? sender, EventArgs e)
         {
             var list = ReadGrid();
@@ -75,6 +83,7 @@ namespace ProcessSchedulerSim
                 return;
             }
 
+            // Ejecuta el algoritmo seleccionado
             string algo = Convert.ToString(cboAlgo.SelectedItem) ?? "FCFS";
             ScheduleResult result;
             if (algo.StartsWith("FCFS")) result = Scheduler.RunFCFS(list);
@@ -83,16 +92,25 @@ namespace ProcessSchedulerSim
 
             _last = result;
             _timeline = result.Timeline.ToList();
-
+            // Valida que se haya generado algún tramo
+            if (_timeline.Count == 0)
+            {
+                MessageBox.Show("No se generó ningún tramo de ejecución.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            //Actualiza el diagrama de Gantt
             gantt.Data.Clear();
             gantt.Data.AddRange(_timeline);
             gantt.Invalidate();
 
+
+            // Actualiza las métricas
             lblAvgW.Text = $"Avg Waiting: {result.AvgWaiting:F2}";
             lblAvgT.Text = $"Avg Turnaround: {result.AvgTurnaround:F2}";
             lblThroughput.Text = $"Throughput: {result.Throughput:F4}";
             lblMakespan.Text = $"Makespan: {result.Makespan}";
 
+            // Prepara la tabla en vivo
             PrepareLiveTable(list);
             _executedSoFar = list.ToDictionary(p => p.PID, p => 0);
             _now = 0;
@@ -105,6 +123,7 @@ namespace ProcessSchedulerSim
             simTimer.Start();
         }
 
+        // Prepara la tabla en vivo con los procesos iniciales
         private void PrepareLiveTable(List<ProcessItem> source)
         {
             liveGrid.Rows.Clear();
@@ -114,6 +133,7 @@ namespace ProcessSchedulerSim
             }
         }
 
+        // Limpia todo para una nueva simulación
         private void BtnClear_Click(object? sender, EventArgs e)
         {
             grid.Rows.Clear();
@@ -138,6 +158,7 @@ namespace ProcessSchedulerSim
             sliceBar.Value = 0;
         }
 
+        // Exporta el reporte a CSV
         private void BtnExportCsv_Click(object? sender, EventArgs e)
         {
             if (_last == null || _last.Completed.Count == 0)
@@ -159,7 +180,7 @@ namespace ProcessSchedulerSim
                 }
             }
         }
-
+        // Exporta el reporte a PDF
         private void BtnExportPdf_Click(object? sender, EventArgs e)
         {
             if (_last == null || _last.Completed.Count == 0)
@@ -181,7 +202,7 @@ namespace ProcessSchedulerSim
                 }
             }
         }
-
+        // Simula el paso del tiempo y actualiza la interfaz
         private void SimTimer_Tick(object? sender, EventArgs e)
         {
             if (_memUp) { _memAnim += 7; if (_memAnim >= 100) { _memAnim = 100; _memUp = false; } }
@@ -190,6 +211,7 @@ namespace ProcessSchedulerSim
 
             if (_timeline.Count == 0) { simTimer.Stop(); return; }
 
+            // Avanza al siguiente tramo si es necesario
             if (_sliceIndex < 0 || _sliceElapsed >= _sliceDuration)
             {
                 _sliceIndex++;
@@ -210,6 +232,7 @@ namespace ProcessSchedulerSim
                 sliceBar.Value = 0;
                 UpdateLiveStatesOnSliceStart(s);
             }
+            // Avanza el tiempo en el tramo actual
             else
             {
                 _sliceElapsed++;
@@ -221,6 +244,7 @@ namespace ProcessSchedulerSim
             UpdateRemainingForCurrent();
         }
 
+        // Actualiza los estados en la tabla en vivo al iniciar un nuevo tramo
         private void UpdateLiveStatesOnSliceStart(ScheduledSlice s)
         {
             foreach (DataGridViewRow row in liveGrid.Rows)
@@ -240,6 +264,7 @@ namespace ProcessSchedulerSim
             }
         }
 
+        // Actualiza el tiempo restante de cada proceso en la tabla en vivo
         private void UpdateRemainingForCurrent()
         {
             if (_sliceIndex < 0 || _sliceIndex >= _timeline.Count) return;
@@ -267,7 +292,7 @@ namespace ProcessSchedulerSim
                 }
             }
         }
-
+        // Obtiene el burst time de un proceso dado su PID
         private int GetBurstOfPid(string pid)
         {
             foreach (DataGridViewRow row in grid.Rows)

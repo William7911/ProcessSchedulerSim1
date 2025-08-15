@@ -4,7 +4,6 @@ using System.Drawing;
 namespace ProcessSchedulerSim
 {
 
-    //COdigo
     partial class MainForm
     {
         private System.ComponentModel.IContainer components = null!;
@@ -107,7 +106,7 @@ namespace ProcessSchedulerSim
             pnlTop.TabIndex = 2;
             pnlTop.WrapContents = false;
             // 
-            // btnAdd
+            // Añade botones para implemenatar mas procesos
             // 
             btnAdd.BackColor = SystemColors.ButtonHighlight;
             btnAdd.Cursor = Cursors.Hand;
@@ -119,7 +118,7 @@ namespace ProcessSchedulerSim
             btnAdd.UseVisualStyleBackColor = false;
             btnAdd.Click += BtnAdd_Click;
             // 
-            // btnRandom
+            // Configuracion del boton random (aleatorios) 
             // 
             btnRandom.BackColor = SystemColors.ButtonHighlight;
             btnRandom.Cursor = Cursors.Hand;
@@ -131,7 +130,7 @@ namespace ProcessSchedulerSim
             btnRandom.UseVisualStyleBackColor = false;
             btnRandom.Click += BtnRandom_Click;
             // 
-            // btnRun
+            // Ejecuta el proyecto con los procesos que se hayan añadido
             // 
             btnRun.BackColor = SystemColors.ButtonHighlight;
             btnRun.Cursor = Cursors.Hand;
@@ -143,7 +142,7 @@ namespace ProcessSchedulerSim
             btnRun.UseVisualStyleBackColor = false;
             btnRun.Click += BtnRun_Click;
             // 
-            // btnClear
+            // limpia los procesos añadidos
             // 
             btnClear.BackColor = SystemColors.ButtonHighlight;
             btnClear.Cursor = Cursors.Hand;
@@ -155,7 +154,7 @@ namespace ProcessSchedulerSim
             btnClear.UseVisualStyleBackColor = false;
             btnClear.Click += BtnClear_Click;
             // 
-            // btnExportCsv
+            // exporta los procesos a un archivo CVS
             // 
             btnExportCsv.BackColor = SystemColors.ButtonHighlight;
             btnExportCsv.Cursor = Cursors.Hand;
@@ -167,7 +166,7 @@ namespace ProcessSchedulerSim
             btnExportCsv.UseVisualStyleBackColor = false;
             btnExportCsv.Click += BtnExportCsv_Click;
             // 
-            // btnExportPdf
+            // exporta los procesos a un archivo PDF
             // 
             btnExportPdf.BackColor = SystemColors.ButtonHighlight;
             btnExportPdf.Cursor = Cursors.Hand;
@@ -179,7 +178,7 @@ namespace ProcessSchedulerSim
             btnExportPdf.UseVisualStyleBackColor = false;
             btnExportPdf.Click += BtnExportPdf_Click;
             // 
-            // lblAlgo
+            // realiza la configuracion del label de algoritmo
             // 
             lblAlgo.Anchor = AnchorStyles.None;
             lblAlgo.BackColor = Color.DarkCyan;
@@ -188,7 +187,7 @@ namespace ProcessSchedulerSim
             lblAlgo.Size = new Size(100, 23);
             lblAlgo.TabIndex = 6;
             // 
-            // cboAlgo
+            // Muestra los algoritmos disponibles
             // 
             cboAlgo.Items.AddRange(new object[] { "FCFS", "SJF (No apropiativo)", "Round Robin" });
             cboAlgo.Location = new Point(725, 11);
@@ -196,7 +195,7 @@ namespace ProcessSchedulerSim
             cboAlgo.Size = new Size(121, 28);
             cboAlgo.TabIndex = 7;
             // 
-            // lblQuantum
+            // Cuantos procesos se ejecutan en el quantum
             // 
             lblQuantum.Anchor = AnchorStyles.None;
             lblQuantum.BackColor = Color.White;
@@ -207,7 +206,7 @@ namespace ProcessSchedulerSim
             lblQuantum.Text = "Quantum";
             lblQuantum.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // nudQuantum
+            // cuanto tiempo dura el quantum
             // 
             nudQuantum.Location = new Point(958, 11);
             nudQuantum.Name = "nudQuantum";
